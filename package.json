@@ -1,0 +1,26 @@
+{
+  "name": "clubhub-backend",
+  "version": "1.0.0",
+  "description": "This is an api built using [express.js](https://www.npmjs.com/package/express), [better-sqlite3](https://www.npmjs.com/package/better-sqlite3), written in [typescript](https://www.npmjs.com/package/typescript)",
+  "homepage": "https://github.com/PolymorFox/ClubHub-Backend#readme",
+  "bugs": {
+    "url": "https://github.com/PolymorFox/ClubHub-Backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PolymorFox/ClubHub-Backend.git"
+  },
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.2",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
