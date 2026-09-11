@@ -6,3 +6,6 @@ app.use(express.json());
 
 // Mount routes for a diagnostic checks on root path
 app.use("/", diagnosticRoutes);
+
+console.log("Listening on port 3000");
+app.listen(3000)
