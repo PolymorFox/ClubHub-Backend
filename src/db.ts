@@ -41,27 +41,33 @@ CREATE TABLE IF NOT EXISTS annoucements (
 `);
 
 // Let's insert a few default clubs
-const clubs: string[] = ["Web and App Programming", "Culinary and Arts", "Design Tech", "Football"];
+const clubs: string[] = [
+  "Web and App Programming",
+  "Culinary and Arts",
+  "Design Tech",
+  "Football",
+];
 for (const club of clubs) {
-  db.prepare("INSERT INTO clubs (name) VALUES (?)").run(club);
+  db.prepare("INSERT OR IGNORE INTO clubs (name) VALUES (?)").run(club);
 }
-
 
 // Let's insert one default admin user
 try {
-  db.prepare(`
-    INSERT INTO users (name, email, password, role, club)
+  db.prepare(
+    `
+    INSERT OR IGNORE INTO users (name, email, password, role, club)
     VALUES (?, ?, ?, ?, ?)
-  `).run(
-    'admin',
-    'admin@admin.com',
-    'changeme',
-    'admin',
-    'Web and App Programming'
+  `,
+  ).run(
+    "admin",
+    "admin@admin.com",
+    "changeme",
+    "admin",
+    "Web and App Programming",
   );
 } catch (error) {
   console.error(error);
   process.exit(1);
 }
 
-export { db }
+export { db };
