@@ -1,10 +1,19 @@
 import { Router, type Response, type Request } from "express";
 import { db } from "../db.js";
-import { error } from "console";
+import bcrypt from "bcrypt";
 
 export const loginRoutes = Router();
 
-loginRoutes.post("/", (req: Request, res: Response) => {
+interface UserRow {
+  id: number;
+  name: string;
+  email: string;
+  password_hash: string;
+  role: string;
+  club: string;
+}
+
+loginRoutes.post("/", async (req: Request, res: Response) => {
   // Let's check if the user record returns any rows in the db
   const { email, password } = req.body;
 
@@ -15,13 +24,15 @@ loginRoutes.post("/", (req: Request, res: Response) => {
   try {
     // TODO Implement comparing password with hashes instead of raw plain text compare
     const user = db
-      .prepare("SELECT * FROM users WHERE email = ? AND password = ?")
-      .get(email, password);
-
-    if (!user) {
+      .prepare("SELECT * FROM users WHERE email = ?")
+      .get(email) as UserRow | undefined;
+    if (!user || !(await bcrypt.compare(password, user.password_hash))) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    return res.status(200).json({ user: user });
+
+    const { password_hash, ...safeUser } = user;
+
+    return res.status(200).json({ user: safeUser });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error });

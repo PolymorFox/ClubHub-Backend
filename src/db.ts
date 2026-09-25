@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import process from "node:process";
+import bcrypt from "bcrypt";
 import type { Database as DatabaseType } from "better-sqlite3";
-
 const db: DatabaseType = new Database("app.db");
 
 // Make sure foreign keys are enabled
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
-  password TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
   role TEXT NOT NULL,
   club TEXT NOT NULL,
   FOREIGN KEY (club) REFERENCES clubs(name) ON DELETE CASCADE
@@ -29,14 +29,6 @@ CREATE TABLE IF NOT EXISTS events (
   due_date TEXT NOT NULL,
   club TEXT NOT NULL,
   FOREIGN KEY (club) REFERENCES clubs(name) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS annoucements (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  author TEXT NOT NULL,
-  FOREIGN KEY (author) REFERENCES users(name)
 );
 `);
 
@@ -55,13 +47,13 @@ for (const club of clubs) {
 try {
   db.prepare(
     `
-    INSERT OR IGNORE INTO users (name, email, password, role, club)
+    INSERT OR IGNORE INTO users (name, email, password_hash, role, club)
     VALUES (?, ?, ?, ?, ?)
   `,
   ).run(
     "admin",
     "admin@admin.com",
-    "changeme",
+    await bcrypt.hash("changeme", 12),
     "admin",
     "Web and App Programming",
   );
